@@ -12,7 +12,7 @@ import Domain
 
 public final class LocationsListViewController: UIViewController {
 
-    private let viewModel: (LocationsListViewModelOutputEmitting & ViewModelCycle)
+    private let viewModel: LocationsListViewModelLogic & LocationsListViewModelOutputEmitting
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -23,14 +23,14 @@ public final class LocationsListViewController: UIViewController {
             collectionView: collectionView,
             cellProvider: { collectionView, indexPath, location in
                 let cell = collectionView.dequeueReusableCell(for: LocationCell.self, indexPath: indexPath)
-                cell.configure(title: location.name ?? "Unknown lands", subtitle: "\(location.coordinate)")
+                cell.configure(title: location.name ?? "Unknown lands", subtitle: location.readableCoordinates)
                 return cell
             }
         )
         return dataSource
     }()
 
-    public init(viewModel: LocationsListViewModelOutputEmitting & ViewModelCycle) {
+    public init(viewModel: LocationsListViewModelLogic & LocationsListViewModelOutputEmitting) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,6 +38,10 @@ public final class LocationsListViewController: UIViewController {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        print("☢️ \(self) deinit")
     }
 
     public override func viewDidLoad() {
@@ -87,6 +91,9 @@ private extension LocationsListViewController {
 
     func makeLayout() {
         title = "Locations" // TODO: Localization
+
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
+
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
         collectionView.delegate = self
@@ -102,21 +109,37 @@ private extension LocationsListViewController {
             ]
         )
     }
+
+    @objc
+    private func didTapSearch() {
+        Task {
+            await viewModel.startSearch()
+        }
+    }
 }
 
-extension LocationsListViewController: UICollectionViewDelegate { }
+extension LocationsListViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+    }
+}
 
 private extension LocationsListViewController {
     func makeBindings() {
         viewModel.locationsSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak dataSource] locations in
+            .sink { [weak dataSource] locationsDictionary in
                 guard let dataSource else { return }
                 var snapshot = NSDiffableDataSourceSnapshot<Int, Location>()
-                snapshot.appendSections([0])
-                snapshot.appendItems(locations[.remote] ?? [], toSection: 0)
+                let nonEmptySections = locationsDictionary
+                let sectionsNumbers: [Int] = nonEmptySections.keys.map(\.rawValue).sorted()
+                snapshot.appendSections(sectionsNumbers)
+                nonEmptySections.forEach { section in
+                    snapshot.appendItems(section.value, toSection: section.key.rawValue)
+                }
                 dataSource.apply(snapshot)
-            }.store(in: &cancellables)
+            }
+            .store(in: &cancellables)
     }
 }
 #endif

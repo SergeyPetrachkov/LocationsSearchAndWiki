@@ -9,11 +9,16 @@ import Foundation
 import Combine
 import Domain
 
+public protocol LocationsListViewModelLogic: AnyObject, ViewModelCycle {
+    func startSearch() async
+}
+
 @MainActor
-public final class LocationsListViewModel: ViewModelCycle, LocationsListViewModelOutputEmitting {
+public final class LocationsListViewModel: LocationsListViewModelLogic, LocationsListViewModelOutputEmitting {
 
     // MARK: - Private props
     private let locationsRepository: LocationsRepositoryLogic
+    private let coordinatorInput: LocationsListCoordinatorInput
 
     // MARK: - Output connectors
     public let locationsSubject: CurrentValueSubject<[LocationOrigin : [Location]], Never> = .init([:])
@@ -21,8 +26,9 @@ public final class LocationsListViewModel: ViewModelCycle, LocationsListViewMode
     public let errorSubject: PassthroughSubject<Error, Never> = .init()
 
     // MARK: - Init
-    public init(locationsRepository: LocationsRepositoryLogic) {
+    public init(locationsRepository: LocationsRepositoryLogic, coordinatorInput: LocationsListCoordinatorInput) {
         self.locationsRepository = locationsRepository
+        self.coordinatorInput = coordinatorInput
     }
 
     // MARK: - Class Interface
@@ -35,7 +41,9 @@ public final class LocationsListViewModel: ViewModelCycle, LocationsListViewMode
         locationsSubject.send(locations)
     }
 
-    public func pause() async {
+    public func pause() async { }
 
+    public func startSearch() async {
+        coordinatorInput.didTriggerLocationSearch()
     }
 }

@@ -14,15 +14,15 @@ import LocationsManagerAPI
 final class AppCoordinator {
 
     private let rootNavigationController: UINavigationController
+    private let dependenciesContainer: DependencyContaining
 
-    init(rootNavigationController: UINavigationController) {
+    init(rootNavigationController: UINavigationController, dependenciesContainer: DependencyContaining) {
         self.rootNavigationController = rootNavigationController
+        self.dependenciesContainer = dependenciesContainer
     }
 
     func start() {
-        let locationsRepo = LocationsRepository(logger: OSLogger(), api: LocationsManagerAPI(urlSession: URLSession.shared))
-        let locationsViewModel = LocationsListViewModel(locationsRepository: locationsRepo)
-        let viewController = LocationsListViewController(viewModel: locationsViewModel)
-        rootNavigationController.setViewControllers([viewController], animated: true)
+        let locationsListCoordinator = LocationsListCoordinator(navigationController: rootNavigationController, dependenciesContainer: dependenciesContainer)
+        locationsListCoordinator.start()
     }
 }

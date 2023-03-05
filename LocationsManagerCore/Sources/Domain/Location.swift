@@ -12,6 +12,28 @@ public struct Location {
     public let name: String?
     public let coordinate: CLLocationCoordinate2D
 
+    /// This is a simple conversion from raw lat/long to something more user-friendly.
+    ///
+    /// **Important:**
+    /// This can/should reside in a separate entity, but for the sake of simplicity I put it here.
+    ///
+    /// P.S. this method does not normalize overflown coordinates like 420, 370, etc.
+    public var readableCoordinates: String {
+        var latSeconds = Int(coordinate.latitude * 3600)
+        let latDegrees = latSeconds / 3600
+        latSeconds = abs(latSeconds % 3600)
+        let latMinutes = latSeconds / 60
+        latSeconds %= 60
+
+        var lonSeconds = Int(coordinate.longitude * 3600)
+        let lonDegrees = lonSeconds / 3600
+        lonSeconds = abs(lonSeconds % 3600)
+        let lonMinutes = lonSeconds / 60
+        lonSeconds %= 60
+
+        return "\(abs(latDegrees))°\(latMinutes)'\(latDegrees >= 0 ? "N" : "S") \(abs(lonDegrees))°\(lonMinutes)'\(lonDegrees >= 0 ? "E" : "W")"
+    }
+
     public init(name: String? = nil, coordinate: CLLocationCoordinate2D) {
         self.name = name
         self.coordinate = coordinate

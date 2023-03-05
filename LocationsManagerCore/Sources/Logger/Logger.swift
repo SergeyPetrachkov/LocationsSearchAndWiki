@@ -6,14 +6,27 @@
 //
 
 import Foundation
+import struct CoreLocation.CLLocationCoordinate2D
 
 public enum LocationsManagerEvent {
     case fetchLocations
+    case searchLocation(coordinate: CLLocationCoordinate2D)
 
     public var name: String {
         switch self {
         case .fetchLocations:
             return "fetch_locations"
+        case .searchLocation:
+            return "search_location"
+        }
+    }
+
+    public var parameters: [String: String] {
+        switch self {
+        case .fetchLocations:
+            return [:]
+        case .searchLocation:
+            return [:]
         }
     }
 }

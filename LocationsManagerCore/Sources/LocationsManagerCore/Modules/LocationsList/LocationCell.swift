@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  LocationCell.swift
 //  
 //
 //  Created by Sergey Petrachkov on 05.03.2023.
@@ -9,7 +9,7 @@
 import UIKit
 
 public final class LocationCell: UICollectionViewCell {
-
+    // MARK: - UI components
     private lazy var titleView: UILabel = {
         let view = UILabel(frame: .zero)
         view.font = .preferredFont(forTextStyle: .headline)
@@ -24,6 +24,7 @@ public final class LocationCell: UICollectionViewCell {
         return view
     }()
 
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureViews()
@@ -34,12 +35,14 @@ public final class LocationCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Class interface
     func configure(title: String, subtitle: String) {
         titleView.text = title
         coordinatesView.text = subtitle
     }
 }
 
+// MARK: - Private logic
 private extension LocationCell {
     func configureViews() {
         contentView.addSubview(titleView)
@@ -61,5 +64,4 @@ private extension LocationCell {
         )
     }
 }
-
 #endif
