@@ -17,13 +17,17 @@ let domain = "Domain"
 let domainTarget = Target.target(name: domain, path: path(for: domain))
 let domainDependency = Target.Dependency.target(name: domain)
 
+let geocoding = "Geocoding"
+let geocodingTarget = Target.target(name: geocoding, dependencies: [domainDependency], path: path(for: geocoding))
+let geocodingDependency = Target.Dependency.target(name: geocoding)
+
 let logger = "Logger"
 let loggerTarget = Target.target(name: logger, path: path(for: logger))
 let loggerDependency = Target.Dependency.target(name: logger)
 
 /// This is an Umbrella target that has everything glued together
 let locationsManagerCore = "LocationsManagerCore"
-let locationsManagerCoreTarget = Target.target(name: locationsManagerCore, dependencies: [locationsManagerAPIDependency, domainDependency, loggerDependency], path: path(for: locationsManagerCore))
+let locationsManagerCoreTarget = Target.target(name: locationsManagerCore, dependencies: [locationsManagerAPIDependency, domainDependency, loggerDependency, geocodingDependency], path: path(for: locationsManagerCore))
 let locationsManagerCoreDependency = Target.Dependency.target(name: locationsManagerCore)
 
 // MARK: - Test targets
@@ -48,6 +52,7 @@ let package = Package(
     ],
     targets: [
         domainTarget,
+        geocodingTarget,
         loggerTarget,
         networkingCoreTarget,
         locationsManagerAPITarget,

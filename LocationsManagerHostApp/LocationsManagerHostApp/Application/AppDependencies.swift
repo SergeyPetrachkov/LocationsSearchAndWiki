@@ -8,6 +8,7 @@
 import LocationsManagerCore
 import LocationsManagerAPI
 import Logger
+import Geocoding
 
 final class AppDependencies: DependencyContaining {
 
@@ -19,5 +20,13 @@ final class AppDependencies: DependencyContaining {
 
     func locationsRepository() -> LocationsRepositoryLogic {
         LocationsRepository(logger: logger, api: locationsApi(), userLocationsStorage: SimpleUserLocationsStorage())
+    }
+
+    func geocoder() -> Geocoder {
+        AppleGeocoder()
+    }
+
+    func externalCoordinator() -> ExternalCoordinator {
+        WikiAppCoordinator(logger: logger)
     }
 }

@@ -5,7 +5,9 @@
 //  Created by Sergey Petrachkov on 05.03.2023.
 //
 
-public protocol LocationsListCoordinatorInput: AnyObject {
+import Domain
+
+public protocol LocationsListCoordinatorInput: AnyObject, ExternalCoordinator {
     func didTriggerLocationSearch()
 }
 
@@ -31,8 +33,12 @@ public final class LocationsListCoordinator {
 
 extension LocationsListCoordinator: LocationsListCoordinatorInput {
     public func didTriggerLocationSearch() {
-        let locationSearchCoordinator = LocationSearchCoordinator(navigationController: navigationController)
+        let locationSearchCoordinator = LocationSearchCoordinator(navigationController: navigationController, dependenciesContainer: dependenciesContainer)
         locationSearchCoordinator.start()
+    }
+
+    public func show(location: Location) {
+        dependenciesContainer.externalCoordinator().show(location: location)
     }
 }
 #endif

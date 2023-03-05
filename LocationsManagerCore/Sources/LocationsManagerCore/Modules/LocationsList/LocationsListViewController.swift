@@ -69,7 +69,7 @@ private extension LocationsListViewController {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(44)
+            heightDimension: .estimated(60)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -120,7 +120,7 @@ private extension LocationsListViewController {
 
 extension LocationsListViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        viewModel.showLocation(section: indexPath.section, row: indexPath.row)
     }
 }
 

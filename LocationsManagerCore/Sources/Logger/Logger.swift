@@ -11,6 +11,7 @@ import struct CoreLocation.CLLocationCoordinate2D
 public enum LocationsManagerEvent {
     case fetchLocations
     case searchLocation(coordinate: CLLocationCoordinate2D)
+    case showLocation(name: String?, coordinate: CLLocationCoordinate2D)
 
     public var name: String {
         switch self {
@@ -18,6 +19,8 @@ public enum LocationsManagerEvent {
             return "fetch_locations"
         case .searchLocation:
             return "search_location"
+        case .showLocation:
+            return "show_location"
         }
     }
 
@@ -27,6 +30,8 @@ public enum LocationsManagerEvent {
             return [:]
         case .searchLocation:
             return [:]
+        case let .showLocation(name, coordinate):
+            return ["location_name": name ?? "n/a", "coordinate": "\(coordinate)"]
         }
     }
 }

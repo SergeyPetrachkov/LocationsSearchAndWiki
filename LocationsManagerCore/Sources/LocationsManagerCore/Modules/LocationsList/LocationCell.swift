@@ -10,19 +10,7 @@ import UIKit
 
 public final class LocationCell: UICollectionViewCell {
     // MARK: - UI components
-    private lazy var titleView: UILabel = {
-        let view = UILabel(frame: .zero)
-        view.font = .preferredFont(forTextStyle: .headline)
-        view.numberOfLines = 2
-        return view
-    }()
-
-    private lazy var coordinatesView: UILabel = {
-        let view = UILabel(frame: .zero)
-        view.font = .preferredFont(forTextStyle: .subheadline)
-        view.numberOfLines = 2
-        return view
-    }()
+    private lazy var locationView = LocationView(frame: .zero)
 
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -37,29 +25,22 @@ public final class LocationCell: UICollectionViewCell {
 
     // MARK: - Class interface
     func configure(title: String, subtitle: String) {
-        titleView.text = title
-        coordinatesView.text = subtitle
+        locationView.configure(title: title, subtitle: subtitle)
     }
 }
 
 // MARK: - Private logic
 private extension LocationCell {
     func configureViews() {
-        contentView.addSubview(titleView)
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-
-        contentView.addSubview(coordinatesView)
-        coordinatesView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(locationView)
+        locationView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate(
             [
-                titleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-                titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-                titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                coordinatesView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 8),
-                coordinatesView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-                coordinatesView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                coordinatesView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 8),
+                locationView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                locationView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                locationView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                locationView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             ]
         )
     }

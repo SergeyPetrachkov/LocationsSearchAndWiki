@@ -9,5 +9,4 @@ import Foundation
 
 public protocol ViewModelCycle {
     func start() async
-    func pause() async
 }

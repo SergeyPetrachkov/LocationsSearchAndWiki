@@ -18,7 +18,7 @@ public final class OSLogger: Logging {
     public init() {}
 
     public func log(event: LocationsManagerEvent) {
-        os_log("ℹ️ %{public}@", log: OSLog.userActivity, type: .info, event.name)
+        os_log("ℹ️ %{public}@ %{private}@", log: OSLog.userActivity, type: .info, event.name, event.parameters)
     }
 
     public func log(_ string: String) {
