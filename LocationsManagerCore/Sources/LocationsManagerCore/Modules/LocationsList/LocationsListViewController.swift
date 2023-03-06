@@ -12,10 +12,11 @@ import Domain
 
 public final class LocationsListViewController: UIViewController {
 
+    // MARK: - Private props
     private let viewModel: LocationsListViewModelLogic & LocationsListViewModelOutputEmitting
-
     private var cancellables: Set<AnyCancellable> = []
 
+    // MARK: - UI components
     private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: makeCollectionLayout())
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Int, Location> = {
@@ -23,13 +24,14 @@ public final class LocationsListViewController: UIViewController {
             collectionView: collectionView,
             cellProvider: { collectionView, indexPath, location in
                 let cell = collectionView.dequeueReusableCell(for: LocationCell.self, indexPath: indexPath)
-                cell.configure(title: location.name ?? "Unknown lands", subtitle: location.readableCoordinates)
+                cell.configure(title: location.name ?? "Unknown lands", subtitle: location.readableCoordinates) // TODO: Localization
                 return cell
             }
         )
         return dataSource
     }()
 
+    // MARK: - Initializers
     public init(viewModel: LocationsListViewModelLogic & LocationsListViewModelOutputEmitting) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -44,6 +46,8 @@ public final class LocationsListViewController: UIViewController {
         print("☢️ \(self) deinit")
     }
 
+    // MARK: - Life cycle
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         makeLayout()
@@ -57,6 +61,8 @@ public final class LocationsListViewController: UIViewController {
         }
     }
 }
+
+// MARK: - Private stuff
 
 private extension LocationsListViewController {
 
@@ -83,7 +89,7 @@ private extension LocationsListViewController {
             bottom: 10,
             trailing: 10
         )
-        section.interGroupSpacing = 10
+        section.interGroupSpacing = 0
 
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout

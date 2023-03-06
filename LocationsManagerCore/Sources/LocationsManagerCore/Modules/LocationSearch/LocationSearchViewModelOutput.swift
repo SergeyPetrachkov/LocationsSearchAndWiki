@@ -10,4 +10,5 @@ import Domain
 
 public protocol LocationSearchViewModelOutput {
     var currentLocationSubject: CurrentValueSubject<Location?, Never> { get }
+    var loadingSubject: PassthroughSubject<Bool, Never> { get }
 }

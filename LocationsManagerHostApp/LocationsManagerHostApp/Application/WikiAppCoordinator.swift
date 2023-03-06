@@ -11,25 +11,14 @@ import Domain
 import CoreLocation
 import Logger
 
-struct WikiDeeplinkBuilder {
-
-    func callAsFunction(location: Location) -> URL? {
-        var url: URL? = URL(string: "wikipedia://places")
-
-        if let locationName = location.name {
-            url?.append(queryItems: [URLQueryItem(name: "location_name", value: locationName)])
-        }
-        url?.append(queryItems: [URLQueryItem(name: "lat", value: "\(location.coordinate.latitude)"), URLQueryItem(name: "lon", value: "\(location.coordinate.longitude)")])
-        return url
-    }
-}
-
 struct WikiAppCoordinator: ExternalCoordinator {
 
     let logger: Logging
+    let origin: NavigationSeed
 
     func show(location: Location) {
-        logger.log(event: .showLocation(name: location.name, coordinate: location.coordinate))
+        // We are not waiting for the app to actually open the link. Just log it here. Given requirements from the analysts this can/should be reworked.
+        logger.log(event: .showLocation(name: location.name, coordinate: location.coordinate, origin: origin == .locationsList ? .list : .search))
         let buildWikiDeeplink = WikiDeeplinkBuilder()
         if let url = buildWikiDeeplink(location: location) {
             UIApplication.shared.open(url)

@@ -38,8 +38,8 @@ let locationsManagerCoreTestsTarget = Target.testTarget(name: "LocationsManagerC
 let package = Package(
     name: "LocationsManagerCore",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v12),
+        .iOS(.v15), // this is this high because I used keyboardLayoutGuide in LocationSearchViewController to save time implementing observing keyboard myself
+        .macOS(.v13),
     ],
     products: [
         .library(

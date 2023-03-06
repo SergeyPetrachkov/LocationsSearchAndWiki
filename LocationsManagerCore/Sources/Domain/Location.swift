@@ -8,6 +8,10 @@
 import Foundation
 import struct CoreLocation.CLLocationCoordinate2D
 
+/// An entity descibing a location with an optional name and coordinates.
+///
+/// **Important:**
+/// This does not have an identifier, so I decided to calculate hashes.
 public struct Location {
     public let name: String?
     public let coordinate: CLLocationCoordinate2D

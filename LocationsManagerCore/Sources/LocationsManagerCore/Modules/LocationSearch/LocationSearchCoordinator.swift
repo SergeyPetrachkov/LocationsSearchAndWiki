@@ -15,10 +15,12 @@ public protocol LocationSearchCoordinatorInput: AnyObject, ExternalCoordinator {
 import UIKit
 
 @MainActor
-public final class LocationSearchCoordinator {
+public final class LocationSearchCoordinator: NavigationSeedHolder {
 
     private let navigationController: UINavigationController
     private let dependenciesContainer: DependencyContaining
+
+    public let navigationSeed: NavigationSeed = .locationSearch
 
     public init(navigationController: UINavigationController, dependenciesContainer: DependencyContaining) {
         self.navigationController = navigationController
@@ -26,9 +28,16 @@ public final class LocationSearchCoordinator {
     }
 
     func start() {
-        let viewModel = LocationSearchViewModel(geocoder: dependenciesContainer.geocoder(), coordinatorInput: self)
-        let viewController = UINavigationController(rootViewController: LocationSearchViewController(viewModel: viewModel))
-        navigationController.present(viewController, animated: true)
+        let viewModel = LocationSearchViewModel(
+            geocoder: dependenciesContainer.geocoder(),
+            logger: dependenciesContainer.logger,
+            locationsUseCase: dependenciesContainer.locationsUsecase,
+            coordinatorInput: self
+        )
+        let viewController = LocationSearchViewController(viewModel: viewModel)
+        let wrapperController = UINavigationController(rootViewController: viewController)
+        wrapperController.navigationBar.backgroundColor = .white
+        navigationController.present(wrapperController, animated: true)
     }
 }
 
@@ -38,7 +47,7 @@ extension LocationSearchCoordinator: LocationSearchCoordinatorInput {
     }
 
     public func show(location: Location) {
-        dependenciesContainer.externalCoordinator().show(location: location)
+        dependenciesContainer.externalCoordinator(navigationSeed: navigationSeed).show(location: location)
     }
 }
 #endif

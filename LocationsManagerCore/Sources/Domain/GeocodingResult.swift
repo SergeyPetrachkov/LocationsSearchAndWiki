@@ -8,6 +8,7 @@
 import Foundation
 import struct CoreLocation.CLLocationCoordinate2D
 
+/// Most common way to describe geocoding results is here. Most providers give you the same number of fields.
 public struct GeocodingResult {
     public let locality: String?
     public let administrativeArea: String?

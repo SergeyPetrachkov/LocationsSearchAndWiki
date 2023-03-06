@@ -15,9 +15,12 @@ public protocol LocationsListCoordinatorInput: AnyObject, ExternalCoordinator {
 import UIKit
 
 @MainActor
-public final class LocationsListCoordinator {
+public final class LocationsListCoordinator: NavigationSeedHolder {
+
     private let navigationController: UINavigationController
     private let dependenciesContainer: DependencyContaining
+
+    public let navigationSeed: NavigationSeed = .locationsList
 
     public init(navigationController: UINavigationController, dependenciesContainer: DependencyContaining) {
         self.navigationController = navigationController
@@ -25,7 +28,7 @@ public final class LocationsListCoordinator {
     }
 
     public func start() {
-        let viewModel = LocationsListViewModel(locationsRepository: dependenciesContainer.locationsRepository(), coordinatorInput: self)
+        let viewModel = LocationsListViewModel(locationsRepository: dependenciesContainer.locationsUsecase, coordinatorInput: self)
         let viewController = LocationsListViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: true)
     }
@@ -38,7 +41,7 @@ extension LocationsListCoordinator: LocationsListCoordinatorInput {
     }
 
     public func show(location: Location) {
-        dependenciesContainer.externalCoordinator().show(location: location)
+        dependenciesContainer.externalCoordinator(navigationSeed: navigationSeed).show(location: location)
     }
 }
 #endif

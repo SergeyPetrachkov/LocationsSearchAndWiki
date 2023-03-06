@@ -7,6 +7,9 @@
 
 import Logger
 
+/// This is a facade to accumulate different log destinations and provide a unified interface.
+///
+/// If you need to log stuff to Mixpanel/Sentry/Firebase/Appsflyer/etc, add a new destination here.
 final class UnitedLogs: Logging {
 
     private lazy var destinations: [Logger.Logging] = [OSLogger()]

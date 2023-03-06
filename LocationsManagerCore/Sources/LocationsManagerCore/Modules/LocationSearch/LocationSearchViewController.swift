@@ -12,9 +12,22 @@ import Combine
 
 public final class LocationSearchViewController: UIViewController {
     // MARK: - UI components
+
     private lazy var mapView = MKMapView()
+    // TODO: Some strongly typed images would be better. Something with Swiftgen for example.
     private lazy var pinView: UIImageView = UIImageView(image: UIImage(systemName: "mappin", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34)))
-    private lazy var resultsView = LocationView(frame: .zero)
+
+    private lazy var resultsView = ActionableLocationView(frame: .zero)
+
+    private lazy var searchBar: UISearchBar = {
+        let view = UISearchBar(frame: .zero)
+        view.delegate = self
+        view.backgroundColor = .clear
+        view.placeholder = "Search" // TODO: Localization
+        return view
+    }()
+    // TODO: This one should be within another view that would be built on top of ActionableLocationView
+    private lazy var progressView = UIActivityIndicatorView(style: .medium)
 
     // MARK: - Private props
     private let viewModel: LocationSearchViewModelLogic & LocationSearchViewModelOutput
@@ -47,6 +60,29 @@ extension LocationSearchViewController: MKMapViewDelegate {
     }
 }
 
+extension LocationSearchViewController: UISearchBarDelegate {
+
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+    }
+
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        guard let text = searchBar.text else {
+            return
+        }
+        viewModel.textSearchTrigger.send(text)
+    }
+
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+}
+
 private extension LocationSearchViewController {
     func makeLayout() {
 
@@ -64,6 +100,12 @@ private extension LocationSearchViewController {
         view.addSubview(resultsView)
         resultsView.translatesAutoresizingMaskIntoConstraints = false
 
+        view.addSubview(searchBar)
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate(
             [
                 mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -71,12 +113,20 @@ private extension LocationSearchViewController {
                 mapView.topAnchor.constraint(equalTo: view.topAnchor),
                 mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
+                searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 55),
+                searchBar.heightAnchor.constraint(equalToConstant: 44),
+
                 pinView.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
                 pinView.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
 
+                progressView.centerXAnchor.constraint(equalTo: resultsView.centerXAnchor),
+                progressView.centerYAnchor.constraint(equalTo: resultsView.centerYAnchor),
+
                 resultsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
                 resultsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                resultsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -44),
+                resultsView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10),
                 resultsView.heightAnchor.constraint(greaterThanOrEqualToConstant: 60),
             ]
         )
@@ -93,23 +143,38 @@ private extension LocationSearchViewController {
                     return
                 }
                 self?.mapView.setCenter(currentLocation.coordinate, animated: true)
+                self?.searchBar.text = currentLocation.name
+                // TODO: Localization + Unkwnon lands is scattered around the project, which is not good, but for the sake of simplicity it'll do
                 self?.resultsView.configure(title: currentLocation.name ?? "Unknown lands", subtitle: currentLocation.readableCoordinates)
+            }
+            .store(in: &cancellables)
+
+        viewModel
+            .loadingSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                if isLoading {
+                    self?.progressView.startAnimating()
+                } else {
+                    self?.progressView.stopAnimating()
+                }
+                self?.progressView.isHidden = !isLoading
             }
             .store(in: &cancellables)
     }
 
     @objc
-    private func didTapSave() {
+    func didTapSave() {
         viewModel.saveSearchResult()
     }
 
     @objc
-    private func didTapCancel() {
+    func didTapCancel() {
         viewModel.cancelSearch()
     }
 
     @objc
-    private func didTapLocation() {
+    func didTapLocation() {
         viewModel.showCurrentLocation()
     }
 }

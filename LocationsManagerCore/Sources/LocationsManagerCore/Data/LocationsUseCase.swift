@@ -1,5 +1,5 @@
 //
-//  LocationsRepository.swift
+//  LocationsUseCase.swift
 //  
 //
 //  Created by Sergey Petrachkov on 05.03.2023.
@@ -9,26 +9,38 @@ import Foundation
 import Logger
 import LocationsManagerAPI
 import Domain
+import Combine
 
 public enum LocationOrigin: Int {
     case userSearch = 0
     case remote
 }
 
-public protocol LocationsRepositoryLogic {
+public protocol LocationsUseCaseLogic {
+    var userSavedLocationPublisher: PassthroughSubject<Location, Never> { get }
     func fetchLocations() async -> [LocationOrigin: [Location]]
+    func saveLocation(_ location: Location)
 }
 
-public final class LocationsRepository: LocationsRepositoryLogic {
+public final class LocationsUseCase: LocationsUseCaseLogic {
 
     private let logger: Logging
     private let api: LocationsManagerAPIProviding
     private let userLocationsStorage: UserLocationsStoring
+    private var cancellables: Set<AnyCancellable> = []
+
+    public var userSavedLocationPublisher: PassthroughSubject<Location, Never> = .init()
 
     public init(logger: Logging, api: LocationsManagerAPIProviding, userLocationsStorage: UserLocationsStoring) {
         self.logger = logger
         self.api = api
         self.userLocationsStorage = userLocationsStorage
+        userLocationsStorage
+            .newLocationPublisher
+            .sink { [weak self] storedLocation in
+                self?.userSavedLocationPublisher.send(Location(from: storedLocation))
+            }
+            .store(in: &cancellables)
     }
 
     public func fetchLocations() async -> [LocationOrigin: [Location]] {
@@ -47,6 +59,10 @@ public final class LocationsRepository: LocationsRepositoryLogic {
         }
         return result
     }
+
+    public func saveLocation(_ location: Location) {
+        userLocationsStorage.saveLocation(StorableLocation(from: location))
+    }
 }
 
 private extension Location {
@@ -56,5 +72,11 @@ private extension Location {
 
     init(from local: StorableLocation) {
         self.init(name: local.name, latitude: local.latitude, longitude: local.longitude)
+    }
+}
+
+private extension StorableLocation {
+    init(from location: Location) {
+        self.init(name: location.name, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
     }
 }

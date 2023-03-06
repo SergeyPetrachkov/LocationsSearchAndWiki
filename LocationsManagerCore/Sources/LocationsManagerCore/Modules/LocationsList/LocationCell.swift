@@ -10,7 +10,7 @@ import UIKit
 
 public final class LocationCell: UICollectionViewCell {
     // MARK: - UI components
-    private lazy var locationView = LocationView(frame: .zero)
+    private lazy var locationView = ActionableLocationView(frame: .zero)
 
     // MARK: - Initializers
     override init(frame: CGRect) {

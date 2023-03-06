@@ -6,38 +6,13 @@
 //
 
 import Foundation
-import struct CoreLocation.CLLocationCoordinate2D
 
-public enum LocationsManagerEvent {
-    case fetchLocations
-    case searchLocation(coordinate: CLLocationCoordinate2D)
-    case showLocation(name: String?, coordinate: CLLocationCoordinate2D)
-
-    public var name: String {
-        switch self {
-        case .fetchLocations:
-            return "fetch_locations"
-        case .searchLocation:
-            return "search_location"
-        case .showLocation:
-            return "show_location"
-        }
-    }
-
-    public var parameters: [String: String] {
-        switch self {
-        case .fetchLocations:
-            return [:]
-        case .searchLocation:
-            return [:]
-        case let .showLocation(name, coordinate):
-            return ["location_name": name ?? "n/a", "coordinate": "\(coordinate)"]
-        }
-    }
-}
-
+/// An interface for any logging entity
 public protocol Logging {
+    /// Log an event defined within the system
     func log(event: LocationsManagerEvent)
+    /// Log any string if needed
     func log(_ string: String)
+    /// Log errors
     func error(_ error: Error)
 }

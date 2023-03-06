@@ -18,8 +18,10 @@ public protocol LocationsListViewModelLogic: AnyObject, ViewModelCycle {
 public final class LocationsListViewModel: LocationsListViewModelLogic, LocationsListViewModelOutputEmitting {
 
     // MARK: - Private props
-    private let locationsRepository: LocationsRepositoryLogic
+    private let locationsRepository: LocationsUseCaseLogic
     private let coordinatorInput: LocationsListCoordinatorInput
+
+    private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - Output connectors
     public let locationsSubject: CurrentValueSubject<[LocationOrigin : [Location]], Never> = .init([:])
@@ -27,9 +29,15 @@ public final class LocationsListViewModel: LocationsListViewModelLogic, Location
     public let errorSubject: PassthroughSubject<Error, Never> = .init()
 
     // MARK: - Init
-    public init(locationsRepository: LocationsRepositoryLogic, coordinatorInput: LocationsListCoordinatorInput) {
+    public init(locationsRepository: LocationsUseCaseLogic, coordinatorInput: LocationsListCoordinatorInput) {
         self.locationsRepository = locationsRepository
         self.coordinatorInput = coordinatorInput
+        self.locationsRepository
+            .userSavedLocationPublisher
+            .sink { [weak self] location in
+                self?.locationsSubject.value[.userSearch, default: []].append(location)
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Class Interface
@@ -41,8 +49,6 @@ public final class LocationsListViewModel: LocationsListViewModelLogic, Location
         let locations = await locationsRepository.fetchLocations()
         locationsSubject.send(locations)
     }
-
-    public func pause() async { }
 
     public func startSearch() async {
         coordinatorInput.didTriggerLocationSearch()
