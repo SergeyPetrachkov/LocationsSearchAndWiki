@@ -477,9 +477,14 @@ class PlacesViewController: ViewController, UISearchBarDelegate, ArticlePopoverV
     func isDefaultSearch(_ placeSearch: PlaceSearch) -> Bool {
         return placeSearch.type == .location && placeSearch.string == nil && placeSearch.searchResult == nil && placeSearch.origin == .system
     }
-    
+
     func performDefaultSearch(withRegion region: MKCoordinateRegion?) {
         currentSearch = PlaceSearch(filter: currentSearchFilter, type: .location, origin: .system, sortStyle: .links, string: nil, region: region, localizedDescription: WMFLocalizedString("places-search-top-articles", value:"All top articles", comment:"A search suggestion for top articles"), searchResult: nil)
+    }
+
+    @objc
+    func performSearch(by name: String?, latitude: Double, longitude: Double) {
+        currentSearch = PlaceSearch(filter: .top, type: .location, origin: .user, sortStyle: .links, string: name, region: MKCoordinateRegion(center: .init(latitude: latitude, longitude: longitude), span: .init(latitudeDelta: 4.5, longitudeDelta: 8)), localizedDescription: nil, searchResult: nil)
     }
     
     var articleFetchedResultsController: NSFetchedResultsController<WMFArticle>? {

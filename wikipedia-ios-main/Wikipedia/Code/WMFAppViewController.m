@@ -1187,10 +1187,23 @@ NSString *const WMFLanguageVariantAlertsLibraryVersion = @"WMFLanguageVariantAle
             [self setSelectedIndex:WMFAppTabTypePlaces];
             [self.navigationController popToRootViewControllerAnimated:animated];
             NSURL *articleURL = activity.wmf_linkURL;
-            if (articleURL) {
+            // TODO: (Sergey) the solution below is not pretty
+            // The task of deeplinking for any app is always big and cumbersome.
+            // If I were to change things in a more robust manner, I'd use strong typed and pre-defined payloads with enums and swift structs.
+            // Hardcoded magic strings are also not the solution I'd be comfortable with, but since I don't own the codebase and don't know the historical reasons behind the taken approach,
+            // I've chosen to do some tricky shortcut way where my changes are minimal and do not affect other parts of the app, and there are no changed existing method signatures and minimal changes in class interfaces.
+            // This change has not affected Tests, the red tests remained red, the green one remained green.
+            // I haven't written any more tests for this project, because the solution below is not optimal.
+            if (articleURL && ![articleURL.absoluteString isEqualToString:@"https://override"]) {
                 // For "View on a map" action to succeed, view mode has to be set to map.
                 [[self placesViewController] updateViewModeToMap];
                 [[self placesViewController] showArticleURL:articleURL];
+            } else {
+                [[self placesViewController] updateViewModeToMap];
+                NSString *name = [activity.userInfo valueForKey:@"location_name"];
+                NSNumber *latitude = [activity.userInfo valueForKey:@"lat"];
+                NSNumber *longitude = [activity.userInfo valueForKey:@"lon"];
+                [[self placesViewController] performSearchBy:name latitude:latitude.doubleValue longitude:longitude.doubleValue];
             }
         } break;
         case WMFUserActivityTypeContent: {
