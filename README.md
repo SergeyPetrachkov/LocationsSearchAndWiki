@@ -56,7 +56,7 @@ If the user taps a bottom panel view with the location the app will try to open 
 User can also save locations from this screen. (The saved locations will be shown in the list on top of remote locations).
 
 From engineering perspective, there are a few tests that cover some business logic. Though the coverage is minimal (intentionally, just to introduce the unit tests into this project).
-There's also compilable and scalable documentation solution.
+There's also compilable and scalable documentation solution. You can update/regenerate the docs by doing `cd LocationsManagerCore && swift package generate-documentation`
 
 ## What's not done
 
