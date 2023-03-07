@@ -42,7 +42,7 @@ public final class LocationSearchViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    // leaving it here just to quickly demonstrate that there are no retain cycles
     deinit {
         print("☢️ \(self) deinit")
     }
@@ -159,6 +159,22 @@ private extension LocationSearchViewController {
                     self?.progressView.stopAnimating()
                 }
                 self?.progressView.isHidden = !isLoading
+            }
+            .store(in: &cancellables)
+
+        viewModel
+            .geocodingErrorSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                // TODO: Localization + we could have an error presenting coordinator
+                let alertController = UIAlertController(
+                    title: "Oops!",
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+                let defaultAction = UIAlertAction(title: "OK", style: .cancel)
+                alertController.addAction(defaultAction)
+                self?.present(alertController, animated: true)
             }
             .store(in: &cancellables)
     }

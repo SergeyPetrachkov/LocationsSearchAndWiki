@@ -25,6 +25,7 @@ public protocol UserLocationsStoring {
     func saveLocation(_ location: StorableLocation)
 }
 
+/// Simple UserDefaults based implementation. Not secure, just quick and dirty.
 public final class SimpleUserLocationsStorage: UserLocationsStoring {
 
     private let key = "user_locations"

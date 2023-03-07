@@ -11,6 +11,7 @@ import LocationsManagerAPI
 import Domain
 import Combine
 
+/// A way to categorise locations by their origin (remote or coming from a server and ones coming from user's search)
 public enum LocationOrigin: Int {
     case userSearch = 0
     case remote
@@ -22,6 +23,9 @@ public protocol LocationsUseCaseLogic {
     func saveLocation(_ location: Location)
 }
 
+/// This entity manages locations related logic.
+///
+/// It talks to a server (Github in our case), it also talks to our local storage. And it also provides a way to subscribe to user stored locations channel.
 public final class LocationsUseCase: LocationsUseCaseLogic {
 
     private let logger: Logging
@@ -29,7 +33,7 @@ public final class LocationsUseCase: LocationsUseCaseLogic {
     private let userLocationsStorage: UserLocationsStoring
     private var cancellables: Set<AnyCancellable> = []
 
-    public var userSavedLocationPublisher: PassthroughSubject<Location, Never> = .init()
+    public let userSavedLocationPublisher: PassthroughSubject<Location, Never> = .init()
 
     public init(logger: Logging, api: LocationsManagerAPIProviding, userLocationsStorage: UserLocationsStoring) {
         self.logger = logger

@@ -29,6 +29,11 @@ public protocol LocationSearchViewModelLogic: AnyObject {
 /// An implementation of `LocationSearchViewModelLogic` that also conforms to `LocationSearchViewModelOutput`
 public final class LocationSearchViewModel: LocationSearchViewModelLogic, LocationSearchViewModelOutput {
 
+    private enum SearchType {
+        case fromString
+        case fromCoordinates
+    }
+
     // MARK: - Private dependencies
     private let geocoder: Geocoder
     private let logger: Logging
@@ -41,6 +46,7 @@ public final class LocationSearchViewModel: LocationSearchViewModelLogic, Locati
     public let centerCoordinateTrigger: PassthroughSubject<CLLocationCoordinate2D, Never> = .init()
     public let textSearchTrigger: PassthroughSubject<String, Never> = .init()
     public let loadingSubject: PassthroughSubject<Bool, Never> = .init()
+    public let geocodingErrorSubject: PassthroughSubject<GeocodingError, Never> = .init()
 
     // MARK: - Init
 
@@ -107,7 +113,7 @@ private extension LocationSearchViewModel {
         }
         loadingSubject.send(true)
         let geocodingResult = await geocoder.reverseGeocode(coordinate: coordinate)
-        updateCurrentLocation(from: geocodingResult)
+        updateCurrentLocation(from: geocodingResult, searchType: .fromCoordinates)
     }
 
     func searchLocation(by searchTerm: String) async {
@@ -117,13 +123,13 @@ private extension LocationSearchViewModel {
         }
         loadingSubject.send(true)
         let geocodingResult = await geocoder.forwardGeocoder(searchTerm: searchTerm)
-        updateCurrentLocation(from: geocodingResult)
+        updateCurrentLocation(from: geocodingResult, searchType: .fromString)
     }
 
     /// Try to update the current location from given geocoding result.
     ///
     /// If the geocoding failed, the current location won't be updated and the old value will remain.
-    private func updateCurrentLocation(from geocodingResult: GeocodingResult?) {
+    private func updateCurrentLocation(from geocodingResult: GeocodingResult?, searchType: SearchType) {
         let location: Location? = {
             guard let geocodingResult else {
                 return nil
@@ -136,6 +142,9 @@ private extension LocationSearchViewModel {
         } else {
             let previousValue = currentLocationSubject.value
             currentLocationSubject.send(previousValue)
+            geocodingErrorSubject.send(
+                searchType == .fromCoordinates ? .failedReverseGeocoding : .failedForwardGeocoding
+            )
         }
     }
 }
