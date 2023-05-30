@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		395E7EF92A16180D00B79663 /* LocationsManagerApp.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 395E7EF72A16180D00B79663 /* LocationsManagerApp.xcconfig */; };
+		395E7EFA2A16180D00B79663 /* LocationsManager.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 395E7EF82A16180D00B79663 /* LocationsManager.xcconfig */; };
 		3963D83029B4E06800F0E397 /* AppDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3963D82F29B4E06800F0E397 /* AppDependencies.swift */; };
 		3963D83329B4E17100F0E397 /* UnitedLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3963D83229B4E17100F0E397 /* UnitedLogger.swift */; };
 		3963D83729B6274700F0E397 /* WikiAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3963D83629B6274700F0E397 /* WikiAppCoordinator.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		395E7EF72A16180D00B79663 /* LocationsManagerApp.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocationsManagerApp.xcconfig; sourceTree = "<group>"; };
+		395E7EF82A16180D00B79663 /* LocationsManager.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocationsManager.xcconfig; sourceTree = "<group>"; };
 		3963D82F29B4E06800F0E397 /* AppDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencies.swift; sourceTree = "<group>"; };
 		3963D83229B4E17100F0E397 /* UnitedLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitedLogger.swift; sourceTree = "<group>"; };
 		3963D83629B6274700F0E397 /* WikiAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiAppCoordinator.swift; sourceTree = "<group>"; };
@@ -46,6 +50,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		395E7EF62A1617E600B79663 /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				395E7EF82A16180D00B79663 /* LocationsManager.xcconfig */,
+				395E7EF72A16180D00B79663 /* LocationsManagerApp.xcconfig */,
+			);
+			path = Configs;
+			sourceTree = "<group>";
+		};
 		3963D83129B4E16800F0E397 /* UnitedLogs */ = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +88,7 @@
 		39FCE51229B488D4002BEAB8 /* LocationsManagerHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				395E7EF62A1617E600B79663 /* Configs */,
 				3963D83129B4E16800F0E397 /* UnitedLogs */,
 				39FCE52729B4A1CA002BEAB8 /* Application */,
 				39FCE52829B4A1E6002BEAB8 /* SupportingFiles */,
@@ -174,7 +188,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				39FCE52029B488D9002BEAB8 /* LaunchScreen.storyboard in Resources */,
+				395E7EF92A16180D00B79663 /* LocationsManagerApp.xcconfig in Resources */,
 				39FCE51D29B488D9002BEAB8 /* Assets.xcassets in Resources */,
+				395E7EFA2A16180D00B79663 /* LocationsManager.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +341,7 @@
 		};
 		39FCE52529B488D9002BEAB8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 395E7EF82A16180D00B79663 /* LocationsManager.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -352,6 +369,7 @@
 		};
 		39FCE52629B488D9002BEAB8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 395E7EF82A16180D00B79663 /* LocationsManager.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
