@@ -8,7 +8,9 @@
 import Foundation
 import Combine
 import Domain
+import SiberianMacros
 
+@AutoMockable
 public protocol LocationsListViewModelOutputEmitting {
     var locationsSubject: CurrentValueSubject<[LocationOrigin: [Location]], Never> { get }
     var loadingSubject: PassthroughSubject<Bool, Never> { get }

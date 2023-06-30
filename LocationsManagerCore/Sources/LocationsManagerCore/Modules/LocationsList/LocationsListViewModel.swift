@@ -18,7 +18,7 @@ public protocol LocationsListViewModelLogic: AnyObject, ViewModelCycle {
 public final class LocationsListViewModel: LocationsListViewModelLogic, LocationsListViewModelOutputEmitting {
 
     // MARK: - Private props
-    private let locationsRepository: LocationsUseCaseLogic
+    private let locationsRepository: LocationsRepository
     private let coordinatorInput: LocationsListCoordinatorInput
 
     private var cancellables: Set<AnyCancellable> = []
@@ -29,7 +29,7 @@ public final class LocationsListViewModel: LocationsListViewModelLogic, Location
     public let errorSubject: PassthroughSubject<Error, Never> = .init()
 
     // MARK: - Init
-    public init(locationsRepository: LocationsUseCaseLogic, coordinatorInput: LocationsListCoordinatorInput) {
+    public init(locationsRepository: LocationsRepository, coordinatorInput: LocationsListCoordinatorInput) {
         self.locationsRepository = locationsRepository
         self.coordinatorInput = coordinatorInput
         self.locationsRepository

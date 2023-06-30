@@ -10,6 +10,7 @@ import Logger
 import LocationsManagerAPI
 import Domain
 import Combine
+import SiberianMacros
 
 /// A way to categorise locations by their origin (remote or coming from a server and ones coming from user's search)
 public enum LocationOrigin: Int {
@@ -17,7 +18,8 @@ public enum LocationOrigin: Int {
     case remote
 }
 
-public protocol LocationsUseCaseLogic {
+@AutoMockable
+public protocol LocationsRepository {
     var userSavedLocationPublisher: PassthroughSubject<Location, Never> { get }
     func fetchLocations() async -> [LocationOrigin: [Location]]
     func saveLocation(_ location: Location)
@@ -26,7 +28,7 @@ public protocol LocationsUseCaseLogic {
 /// This entity manages locations related logic.
 ///
 /// It talks to a server (Github in our case), it also talks to our local storage. And it also provides a way to subscribe to user stored locations channel.
-public final class LocationsUseCase: LocationsUseCaseLogic {
+public final class LocationsUseCase: LocationsRepository {
 
     private let logger: Logging
     private let api: LocationsManagerAPIProviding

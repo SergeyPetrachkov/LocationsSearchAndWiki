@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import SiberianMacros
 
 /// An interface for any logging entity
+@AutoMockable
 public protocol Logging {
     /// Log an event defined within the system
     func log(event: LocationsManagerEvent)

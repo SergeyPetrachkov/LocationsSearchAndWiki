@@ -6,8 +6,10 @@
 //
 
 import Domain
+import SiberianMacros
 
 /// An abstraction serving to be a gateway for our locations into other apps.
+@AutoMockable
 public protocol ExternalCoordinator {
     func show(location: Location)
 }

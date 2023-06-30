@@ -14,7 +14,7 @@ import Geocoding
 final class AppDependencies: DependencyContaining {
     // MARK: - App scope dependencies
     let logger: Logging = UnitedLogs()
-    lazy var locationsUsecase: LocationsUseCaseLogic = LocationsUseCase(logger: logger, api: locationsApi(), userLocationsStorage: SimpleUserLocationsStorage())
+    lazy var locationsUsecase: LocationsRepository = LocationsUseCase(logger: logger, api: locationsApi(), userLocationsStorage: SimpleUserLocationsStorage())
 
     // MARK: - Factories for screen scoped objects
     func locationsApi() -> LocationsManagerAPIProviding {
