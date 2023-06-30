@@ -8,6 +8,7 @@
 import Domain
 
 public protocol LocationSearchCoordinatorInput: AnyObject, ExternalCoordinator {
+    func start()
     func didCancelSearch()
 }
 
@@ -27,7 +28,7 @@ public final class LocationSearchCoordinator: NavigationSeedHolder {
         self.dependenciesContainer = dependenciesContainer
     }
 
-    func start() {
+    public func start() {
         let viewModel = LocationSearchViewModel(
             geocoder: dependenciesContainer.geocoder(),
             logger: dependenciesContainer.logger,

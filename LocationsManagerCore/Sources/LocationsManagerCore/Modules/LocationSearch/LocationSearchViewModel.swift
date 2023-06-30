@@ -37,7 +37,7 @@ public final class LocationSearchViewModel: LocationSearchViewModelLogic, Locati
     // MARK: - Private dependencies
     private let geocoder: Geocoder
     private let logger: Logging
-    private let locationsUseCase: LocationsUseCaseLogic
+    private let locationsUseCase: LocationsRepository
     private let coordinatorInput: LocationSearchCoordinatorInput
     private var cancellables: Set<AnyCancellable> = []
 
@@ -50,7 +50,7 @@ public final class LocationSearchViewModel: LocationSearchViewModelLogic, Locati
 
     // MARK: - Init
 
-    public init(geocoder: Geocoder, logger: Logging, locationsUseCase: LocationsUseCaseLogic, coordinatorInput: LocationSearchCoordinatorInput) {
+    public init(geocoder: Geocoder, logger: Logging, locationsUseCase: LocationsRepository, coordinatorInput: LocationSearchCoordinatorInput) {
         self.geocoder = geocoder
         self.logger = logger
         self.locationsUseCase = locationsUseCase
